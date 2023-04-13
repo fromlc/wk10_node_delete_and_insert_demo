@@ -2,7 +2,11 @@
 // node_operations.cpp
 //
 // Demos deletion and insertion of linked list nodes.
+// 
+// For a visual demo of list insertion and deletion,
+// go to https://visualgo.net/en/list
 //------------------------------------------------------------------------------
+#include <ios>          // cout.width()
 #include <iostream>
 using std::cin;
 using std::cout;
@@ -10,25 +14,27 @@ using std::cout;
 //------------------------------------------------------------------------------
 // constants
 //------------------------------------------------------------------------------
-constexpr char CRLF = '\n';
+constexpr int FIELD_WIDTH = 3;
 
 //------------------------------------------------------------------------------
 // Node : linked list item
 //------------------------------------------------------------------------------
 class Node {
 public:
-    char  data;
+    int  data;
     Node* pNext;
 
-    Node(char _data) : data(_data), pNext(nullptr) { }
+    Node(int _data) : data(_data), pNext(nullptr) { }
 };
 
 //------------------------------------------------------------------------------
 // local function prototypes
 //------------------------------------------------------------------------------
-void insertNode(Node*& pHead, char newData, char beforeData);
-void deleteNode(Node*& pHead, char deleteData);
+void insertNode(Node*& pHead, int newData, int beforeData);
+void displayInsertBanner(int newData, int beforeData);
+void deleteNode(Node*& pHead, int deleteData);
 void displayNodes(Node* pHead);
+void displayAsciiNodes(Node* pHead);
 void deleteListNodes(Node*& pHead);
 
 //------------------------------------------------------------------------------
@@ -42,32 +48,44 @@ int main() {
     // add some nodes to the list in alphabetical order
 
     // parameter order: pointer to list head, new data, data to insert before
-    insertNode(pHead, 'C', 'x');
-    insertNode(pHead, 'a', 'C');
-    insertNode(pHead, 'n', 'a');
-    insertNode(pHead, 'd', 'a');
-    insertNode(pHead, 'L', 'n');
-    insertNode(pHead, 'i', 'n');
-
-    // display the list
+    insertNode(pHead, 67, 0);
     displayNodes(pHead);
 
+    insertNode(pHead, 97, 67);
+    displayNodes(pHead);
+
+    insertNode(pHead, 110, 97);
+    displayNodes(pHead);
+
+    insertNode(pHead, 100, 97);
+    displayNodes(pHead);
+
+    insertNode(pHead, 76, 110);
+    displayNodes(pHead);
+
+    insertNode(pHead, 105, 110);
+    displayNodes(pHead);
+
+    // display list data as letters
+    displayAsciiNodes(pHead);
+
     // delete the last Node (tail)
-    deleteNode(pHead, 'C');
+    deleteNode(pHead, 67);
     displayNodes(pHead);
 
     // delete the head Node
-    deleteNode(pHead, 'L');
+    deleteNode(pHead, 76);
     displayNodes(pHead);
 
     // delete a Node that's between two others
-    deleteNode(pHead, 'n');
+    deleteNode(pHead, 110);
     displayNodes(pHead);
 
     // free all memory we allocated with new
     deleteListNodes(pHead);
 
     // pause until user types a key
+    cout << "Type any key to exit this app...";
     cin.get();
 
     return 0;
@@ -79,8 +97,10 @@ int main() {
 // - if the passed data value is not found, adds the new Node at list end
 // - returns the new list head pointer in reference parameter pHead
 //------------------------------------------------------------------------------
-void insertNode(Node*& pHead, char newData, char beforeData) {
+void insertNode(Node*& pHead, int newData, int beforeData) {
 
+    displayInsertBanner(newData, beforeData);
+    
     // create the new node
     Node* pNewNode = new Node(newData);
 
@@ -129,10 +149,26 @@ void insertNode(Node*& pHead, char newData, char beforeData) {
 }
 
 //------------------------------------------------------------------------------
+// display new data and the data it will precede in the list
+//------------------------------------------------------------------------------
+void displayInsertBanner(int newData, int beforeData) {
+    cout << "Inserting " << newData;
+    if (beforeData == 0) {
+        cout << " as the first list item\n";
+
+    }
+    else {
+        cout << " before " << beforeData << '\n';
+    }
+}
+
+//------------------------------------------------------------------------------
 // - deletes the Node with data that matches passed value
 // - if head Node was deleted, update reference parameter pHead
 //------------------------------------------------------------------------------
-void deleteNode(Node*& pHead, char deleteData) {
+void deleteNode(Node*& pHead, int deleteData) {
+
+    cout << "Deleting " << deleteData << '\n';
 
     // we need to track our current position in the list
     Node* pCurrent = pHead;
@@ -173,9 +209,24 @@ void deleteNode(Node*& pHead, char deleteData) {
 //------------------------------------------------------------------------------
 void displayNodes(Node* pHead) {
 
+    // display list Node data as numbers
     Node* p = pHead;
     while (p != nullptr) {
-        cout << p->data;
+        cout.width(FIELD_WIDTH);
+        cout << p->data << ' ';
+        p = p->pNext;
+    }
+    cout << "\n\n";
+}
+
+//------------------------------------------------------------------------------
+// display list Node data as ascii characters
+//------------------------------------------------------------------------------
+void displayAsciiNodes(Node* pHead) {
+    Node* p = pHead;
+    while (p != nullptr) {
+        cout.width(FIELD_WIDTH);
+        cout << (char)p->data << ' ';
         p = p->pNext;
     }
     cout << "\n\n";
